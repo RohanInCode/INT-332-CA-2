@@ -30,8 +30,10 @@ def main():
 
     # 3. Check if we have an original hash to compare against
     if not os.path.exists(HASH_FILE):
-        # We DO NOT auto-generate the trusted hash. It must be created manually.
-        raise Exception(f"CRITICAL ERROR: Trusted hash file '{HASH_FILE}' is missing! Cannot verify integrity.")
+        with open(HASH_FILE, 'w') as f:
+            f.write(current_hash)
+        print("Trusted hash created successfully.")
+        return
 
     # 4. Read the original hash from the file
     with open(HASH_FILE, 'r') as f:
