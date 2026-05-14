@@ -23,21 +23,15 @@ def get_file_hash(filepath):
 def main():
     # 1. Check if the important file exists
     if not os.path.exists(FILE_TO_CHECK):
-        print(f"Error: '{FILE_TO_CHECK}' not found!")
-        return
+        raise Exception(f"CRITICAL ERROR: '{FILE_TO_CHECK}' not found!")
 
     # 2. Generate the SHA256 hash for the current state of the file
     current_hash = get_file_hash(FILE_TO_CHECK)
 
     # 3. Check if we have an original hash to compare against
     if not os.path.exists(HASH_FILE):
-        # If it doesn't exist, this is the first time we are running the checker.
-        # Store the current hash as the 'original' hash.
-        with open(HASH_FILE, 'w') as f:
-            f.write(current_hash)
-        print(f"Initial hash generated and stored in '{HASH_FILE}'.")
-        print("Integrity maintained")
-        return
+        # We DO NOT auto-generate the trusted hash. It must be created manually.
+        raise Exception(f"CRITICAL ERROR: Trusted hash file '{HASH_FILE}' is missing! Cannot verify integrity.")
 
     # 4. Read the original hash from the file
     with open(HASH_FILE, 'r') as f:
@@ -47,7 +41,8 @@ def main():
     if current_hash == original_hash:
         print("Integrity maintained")
     else:
-        print("WARNING: Integrity mismatch detected")
+        # Raise an exception to fail the CI/CD pipeline permanently
+        raise Exception("WARNING: Integrity mismatch detected. The file has been modified!")
 
 if __name__ == "__main__":
     main()
