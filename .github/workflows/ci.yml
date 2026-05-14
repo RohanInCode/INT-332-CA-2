@@ -1,0 +1,21 @@
+name: File Integrity Check CI
+
+# Trigger automatically on every git push to any branch
+on: [push]
+
+jobs:
+  integrity-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository code into the GitHub Actions runner
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Build the Docker container using our Dockerfile
+      - name: Build Docker Image
+        run: docker build -t integrity-checker .
+
+      # Step 3: Run the Docker container, which will automatically run checker.py
+      - name: Run Integrity Checker
+        run: docker run integrity-checker

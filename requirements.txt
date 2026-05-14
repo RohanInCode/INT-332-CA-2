@@ -1,0 +1,2 @@
+# No external dependencies are required for this project.
+# We are using Python's built-in 'hashlib' and 'os' libraries.
